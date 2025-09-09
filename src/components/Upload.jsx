@@ -2,13 +2,9 @@
 import React, { memo, useRef, useState } from "react";
 import { CloudUpload, Pencil, X } from "lucide-react";
 import Button from "./Button";
+import toast from "react-hot-toast";
 
-const DEFAULT_ACCEPTED_TYPES = [
-  "image/jpg",
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-];
+const DEFAULT_ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 const DEFAULT_MAX_SIZE_MB = 10;
 
@@ -24,17 +20,16 @@ function Upload({
   onRemove = () => {},
 }) {
   const inputRef = useRef(null);
-  const [error, setError] = useState("");
   const [preview, setPreview] = useState(null);
 
   const validateFile = (file) => {
     if (!acceptedTypes.includes(file.type)) {
-      return "Invalid file type.";
+      return toast.error("Only JPG, JPEG, PNG formats are supported.");
     }
 
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
     if (file.size > maxSizeBytes) {
-      return `File must be less than ${maxSizeMB}MB.`;
+      return toast.error(`File must be less than ${maxSizeMB}MB.`);
     }
 
     return "";
@@ -45,15 +40,13 @@ function Upload({
     const firstError = fileArray.map(validateFile).find((err) => err);
 
     if (firstError) {
-      setError(firstError);
       setPreview(null);
       return;
     }
 
-    setError("");
-
     if (!multiple && showPreview) {
       setPreview(URL.createObjectURL(fileArray[0]));
+      toast.success("Image uploaded successfully!");
     }
 
     onFileSelect(multiple ? fileArray : fileArray[0]);
@@ -85,8 +78,6 @@ function Upload({
         onChange={handleChange}
       />
 
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-
       {showPreview && preview ? (
         <div className="relative w-full max-w-[200px] min-h-[200px]">
           <div className="absolute right-0 -top-[18px] flex items-center gap-2 cursor-pointer">
@@ -97,6 +88,10 @@ function Upload({
               onClick={() => {
                 onRemove();
                 setPreview(null);
+                if (inputRef.current) {
+                  inputRef.current.value = "";
+                }
+                toast.success("Image removed successfully!");
               }}
             />
           </div>

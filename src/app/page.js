@@ -6,7 +6,7 @@ import SwitchButton from "@/components/SwitchButton";
 import Upload from "@/components/Upload";
 import { colors, examplesImage, FemaleImg, MaleImg } from "@/utils/constant";
 import { IMAGES } from "@/utils/images";
-import { Pencil, X } from "lucide-react";
+import { X } from "lucide-react";
 import Image from "next/image";
 import React, { memo, useState } from "react";
 
@@ -15,6 +15,7 @@ function Home() {
   const [activeImgIndex, setActiveImgIndex] = useState(null);
   const [activeColorIndex, setActiveColorIndex] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [color, setColor] = useState("");
 
   const [images, setImages] = useState({
     front: null,
@@ -25,6 +26,7 @@ function Home() {
 
   const selectColor = (index, title) => {
     setActiveColorIndex((prev) => (prev === index ? null : index));
+    setColor(title);
     console.log(title, "color name");
   };
 
@@ -34,13 +36,14 @@ function Home() {
   };
 
   return (
-    <section className="w-[70%] mx-auto flex justify-between items-start">
-      <div className="flex flex-col">
-        <div className="flex justify-start items-center gap-2 mt-16">
+    <section className="w-[70%] mx-auto flex justify-between items-start max-[1024]:flex-wrap max-[1024]:justify-center max-[1024]:gap-10">
+      <div className="flex flex-col w-[80%]">
+        <div className="flex justify-start items-center gap-8 mt-16 flex-wrap max-[1024]:justify-center">
           <Upload
             btnName="Upload Front Image"
             clickOnImg={(img) => setImages((prev) => ({ ...prev, front: img }))}
             onRemove={() => setImages((prev) => ({ ...prev, front: null }))}
+            onFileSelect={(file) => generateBase64FromImage(file)}
           />
           <Upload
             btnName="Upload Back Image"
@@ -60,18 +63,18 @@ function Home() {
         </div>
 
         <div className="flex flex-col justify-center items-center mt-20">
-          <p className="text-lg text-gray-600 mb-1 mt-3">
+          <p className="text-lg text-gray-600 mb-1 mt-3 max-sm:text-sm">
             No photos? Try these examples:
           </p>
 
-          <div className="flex justify-center gap-1.5">
+          <div className="flex justify-center gap-1.5 flex-wrap">
             {examplesImage?.map((single) => (
               <button
                 key={single?.title}
                 className="w-20 h-20 rounded-md overflow-hidden border border-transparent hover:border-purple-500 transition-all cursor-pointer"
                 draggable
                 onDragStart={(e) => {
-                  e.dataTransfer.setData("text/plain", single?.title);
+                  e.dataTransfer.setData("text/plain", single);
                 }}
               >
                 <Image
@@ -209,13 +212,14 @@ function Home() {
           </div>
         </Modal>
 
-        <div className="grid grid-cols-4 gap-4 mt-10">
+        <div className="flex justify-start items-center gap-8 mt-10 flex-wrap max-[1024]:justify-center">
           {Object.entries(images).map(
             ([position, imgData]) =>
               imgData && (
                 <div
                   key={position}
                   className="relative w-full max-w-[200px] min-h-[200px]"
+                  draggable
                 >
                   <div className="absolute right-0 -top-[18px] flex items-center gap-2 cursor-pointer">
                     <X
@@ -289,7 +293,7 @@ function Home() {
         </div>
 
         <Button
-          className="!w-full mt-2 py-4 rounded-lg font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed bg-purple-700 text-white hover:bg-purple-800"
+          className="!w-full mb-4 mt-2 py-4 rounded-lg font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed bg-purple-700 text-white hover:bg-purple-800"
           disabled={activeImgIndex === null}
         >
           Upload Photo
