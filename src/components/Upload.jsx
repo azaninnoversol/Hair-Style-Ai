@@ -99,7 +99,7 @@ function Upload({
           <img
             src={preview}
             alt="Preview"
-            className="mt-2 max-h-60 rounded object-cover h-[245px]"
+            className="mt-2 max-h-60 rounded object-cover h-[245px] cursor-pointer"
             onClick={() => clickOnImg(preview)}
           />
         </div>

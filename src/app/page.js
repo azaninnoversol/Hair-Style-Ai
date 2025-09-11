@@ -43,7 +43,6 @@ function Home() {
             btnName="Upload Front Image"
             clickOnImg={(img) => setImages((prev) => ({ ...prev, front: img }))}
             onRemove={() => setImages((prev) => ({ ...prev, front: null }))}
-            onFileSelect={(file) => generateBase64FromImage(file)}
           />
           <Upload
             btnName="Upload Back Image"
@@ -68,9 +67,9 @@ function Home() {
           </p>
 
           <div className="flex justify-center gap-1.5 flex-wrap">
-            {examplesImage?.map((single) => (
+            {examplesImage?.map((single, index) => (
               <button
-                key={single?.title}
+                key={index}
                 className="w-20 h-20 rounded-md overflow-hidden border border-transparent hover:border-purple-500 transition-all cursor-pointer"
                 draggable
                 onDragStart={(e) => {
@@ -83,6 +82,7 @@ function Home() {
                   className="w-full h-full object-cover"
                   width={50}
                   height={50}
+                  draggable
                 />
               </button>
             ))}
@@ -101,7 +101,7 @@ function Home() {
           <div className="flex items-center justify-center space-x-2 mt-1">
             <input
               id="always-show-guidelines-pc-no-image"
-              className="h-3 w-3 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+              className="h-3 w-3 text-purple-600 focus:ring-purple-500 border-gray-300 rounded cursor-pointer"
               type="checkbox"
             />
             <label
@@ -255,7 +255,7 @@ function Home() {
           />
         </div>
 
-        <div className="grid grid-cols-3 lg:grid-cols-3 gap-2 mb-4 overflow-y-auto overflow-x-hidden h-[380px] mt-2">
+        <div className="grid grid-cols-3 lg:grid-cols-3 gap-2 mb-4 overflow-y-auto overflow-x-hidden h-[380px] mt-2 pr-[8px]">
           {hair[activeIndex]?.map((single, index) => {
             const isActive = activeImgIndex === index;
             return (
